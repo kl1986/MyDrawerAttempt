@@ -44,7 +44,6 @@ import java.util.List;
 public class ListFragment extends Fragment {
 
     View myView;
-    TextView rssi;
 
     // request ID for enabling Bluetooth
     private static final int REQUEST_ENABLE_BT = 1000;
@@ -61,11 +60,7 @@ public class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.list_layout, container, false);
         super.onCreate(savedInstanceState);
-
-
         return myView;
-
-
     }
 
     // simple class to hold data about a beacon
@@ -108,10 +103,6 @@ public class ListFragment extends Fragment {
                 mean += window[i];
             }
             mean /= WINDOW_SIZE;
-
-            //View row = inflater.inflate(R.layout.list_layout, parent, false);
-            rssi = (TextView) findViewById(R.id.rssi_field);
-            rssi.setText(Double.toString(mean));
 
             return mean;
         }
@@ -169,26 +160,18 @@ public class ListFragment extends Fragment {
                 LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View row;
                 if(convertView == null) {
-                    //row = inflater.inflate(R.layout.layout_scanresult, parent, false);
+                    row = inflater.inflate(R.layout.list_layout, parent, false);
                 } else {
                     row = convertView;
                 }
 
                 // manually set the contents of each of the labels
-                //TextView field1 = (TextView) row.findViewById(R.id.resultField1);
-                //TextView field2 = (TextView) row.findViewById(R.id.resultField2);
+                TextView field1 = (TextView) row.findViewById(R.id.rssi_field);
                 BeaconInfo info = data.get(keys.get(position));
-                //field1.setText(info.name + " [" + info.rssi + " dBm]");
-                //field2.setText(info.address);
+                field1.setText(info.name + " [" + info.rssi + " dBm]");
 
-                // if this happens to be the selected beacon, change the background colour to highlight it
-                //if(selectedBeacon != null && info.equals(selectedBeacon))
-                    //row.setBackgroundColor(Color.argb(64, 0, 255, 0));
-
-                //else
-                    //row.setBackgroundColor(Color.argb(255, 255, 255, 255));
-
-                return convertView;
+                return row;
             }
         }
+
 }
