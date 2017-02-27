@@ -10,14 +10,14 @@ import android.view.ViewGroup;
 /**
  * Created by 2287517l on 27/02/2017.
  */
-public class SecondFragment extends Fragment {
+public class LocationsFragment extends Fragment {
 
     View myView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        myView = inflater.inflate(R.layout.second_layout, container, false);
+        myView = inflater.inflate(R.layout.locations_layout, container, false);
         return myView;
     }
 }
