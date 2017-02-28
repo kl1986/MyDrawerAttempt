@@ -16,7 +16,7 @@ public class AddItemOnClick extends AppCompatActivity {
     private ArrayList<String> arrayList;
     private ArrayAdapter<String> adapter;
     private EditText txtInput;
-
+//added this
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
