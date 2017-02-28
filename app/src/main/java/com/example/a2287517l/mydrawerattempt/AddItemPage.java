@@ -17,5 +17,4 @@ public class AddItemPage extends Fragment {
         myView = inflater.inflate(R.layout.add_item_page, container, false);
         return myView;
     }
-
 }
