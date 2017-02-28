@@ -19,7 +19,5 @@ public class OffersFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.offers_layout, container, false);
         return myView;
-
-
     }
 }

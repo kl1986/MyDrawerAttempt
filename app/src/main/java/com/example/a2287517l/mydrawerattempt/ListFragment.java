@@ -166,9 +166,9 @@ public class ListFragment extends Fragment {
                 }
 
                 // manually set the contents of each of the labels
-                TextView field1 = (TextView) row.findViewById(R.id.rssi_field);
+                //TextView field1 = (TextView) row.findViewById(R.id.rssi_field);
                 BeaconInfo info = data.get(keys.get(position));
-                field1.setText(info.name + " [" + info.rssi + " dBm]");
+                //field1.setText(info.name + " [" + info.rssi + " dBm]");
 
                 return row;
             }

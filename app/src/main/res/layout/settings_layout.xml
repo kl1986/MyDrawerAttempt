@@ -1,13 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical" android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+        android:text="Privacy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"/>
 
     <Switch
         android:text="Share lists with stores to recieve offers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
-        android:id="@+id/switch1"
+        android:id="@+id/switch_share_list"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"/>
-</RelativeLayout>
+
+
+    <TextView
+        android:text="Notifications"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView3"/>
+
+    <Switch
+        android:text="Nearby offers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:id="@+id/switch_notif_nearby"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"/>
+
+    <Switch
+        android:text="Reminders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:id="@+id/switch_notif_reminders"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"/>
+
+</LinearLayout>
