@@ -17,14 +17,10 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -83,7 +79,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_offers) {
             fragmentManager.beginTransaction().replace(R.id.content_frame, new OffersFragment()).commit();
         } else if (id == R.id.nav_locations) {
-            //fragmentManager.beginTransaction().replace(R.id.content_frame, new LocationsFragment()).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, new LocationsFragment()).commit();
         } else if (id == R.id.nav_recipes) {
         fragmentManager.beginTransaction().replace(R.id.content_frame, new RecipesFragment()).commit();
         } else if (id == R.id.nav_settings) {
