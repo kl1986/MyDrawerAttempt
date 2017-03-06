@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Button;
 import java.util.ArrayList;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.ListView;
 
@@ -23,17 +24,17 @@ public class AddItemPage extends Fragment {
     EditText itemInput;
     TextView listText;
     ListDBHandler listDBHandler;
-    Button mAddButton;
+    ImageButton mAddButton;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.list_layout, container, false);
         listDBHandler = new ListDBHandler(getActivity(), null, null, 1);
-        itemInput = (EditText) myView.findViewById(R.id.itemInput);
+        itemInput = (EditText) myView.findViewById(R.id.addToList);
         listText = (TextView) myView.findViewById(R.id.listText);
         printDatabase();
 
 
-        mAddButton = (Button) myView.findViewById(R.id.addButton);
+        mAddButton = (ImageButton) myView.findViewById(R.id.addListBtn);
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

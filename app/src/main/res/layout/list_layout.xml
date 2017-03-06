@@ -1,27 +1,29 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context=".AddItemPage">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="16dp"
+    android:paddingTop="16dp"
+    tools:context=".AddItemPage">
 
     <EditText
-        android:id="@+id/itemInput"
-        android:width="300dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:id="@+id/addToList"
+        android:layout_width="280dp"
+        android:inputType="textPersonName"
+        android:hint="Item name"
+        android:background="#FFFFFF"
+        android:layout_height="35dp" />
 
-    <Button
-        android:text="Add"
-        android:id="@+id/addButton"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="38dp"
-        android:layout_below="@+id/itemInput"
-        android:layout_alignLeft="@+id/itemInput"
-        android:layout_alignStart="@+id/itemInput" />
+    <ImageButton
+        android:id="@+id/addListBtn"
+        android:layout_height="40dp"
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:elevation="0dp"
+        android:layout_width="40dp"
+        android:layout_toRightOf="@+id/addToList"
+        android:layout_marginLeft="8dp"
+        android:cropToPadding="false" />
 
 
     <TextView
