@@ -1,6 +1,5 @@
 package com.example.a2287517l.mydrawerattempt;
 
-import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -14,6 +13,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,31 +26,20 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.Activity;
-
-import com.jjoe64.graphview.series.GraphView;
-import com.jjoe64.graphview.LegendRenderer;
-import com.jjoe64.graphview.Viewport;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
-
+import android.app.Fragment;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by 2287517l on 27/02/2017.
- */
-public class ListFragment extends Fragment {
 
+public class BeaconActivity extends Fragment {
     View myView;
-
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private BluetoothAdapter bleDev = null;
     private BluetoothLeScanner scanner = null;
     private ScanResultArrayAdapter scanAdapter = null;
-    private Handler graphHandler = null;
+    //private Handler graphHandler = null;
     private Button toggleScan = null;
 
     // time in milliseconds between graph updates
@@ -62,6 +51,10 @@ public class ListFragment extends Fragment {
     private boolean isScanning = false;
     private int scanMode = ScanSettings.SCAN_MODE_BALANCED;
 
+    // data series for graphing RSSI of selected beacon
+    //private LineGraphSeries<DataPoint> rawRssi;
+    //private LineGraphSeries<DataPoint> basicFilteredRssi;
+
     private int lastx = 0;
 
     // currently selected beacon, if any
@@ -69,17 +62,20 @@ public class ListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        myView = inflater.inflate(R.layout.beacon_page, container, false);
         super.onCreate(savedInstanceState);
-        myView = inflater.inflate(R.layout.list_layout, container, false);
+        //setContentView(R.layout.beacon_page);
 
         // create a handler for executing graph updates
-        graphHandler = new Handler();
+        // graphHandler = new Handler();
 
         // create the adapter used to populate the list of beacons and attach it to the widget
-        scanAdapter = new ScanResultArrayAdapter(this);
+        scanAdapter = new ScanResultArrayAdapter(getActivity());
         final ListView scanResults = (ListView) myView.findViewById(R.id.listResults);
         scanResults.setAdapter(scanAdapter);
 
+        TextView field1 = (TextView) myView.findViewById(R.id.textView4);
+        field1.setText("INITIAL");
         // set up a click handler which sets/updates the selected beacon
         scanResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -92,85 +88,130 @@ public class ListFragment extends Fragment {
                 if(!isScanning)
                     return;
 
-                selectedBeacon = newSelectedBeacon;
-            }
+                // if the selected beacon is being changed
+                if(selectedBeacon == null || !newSelectedBeacon.equals(selectedBeacon)) {
+                    // reset both data series (doesn't seem to be a clear() method...)
+                    //DataPoint[] dp = new DataPoint[1];
+                    //dp[0] = new DataPoint(lastx, newSelectedBeacon.rssi);
+                    //rawRssi.resetData(dp);
+                    //basicFilteredRssi.resetData(dp);
 
-        });
+                    // ask for a redraw of the list widget so that the selected item highlight
+                    // is updated to match the new item
+                    // OUTPUT
+                    // scanResults.invalidateViews();
+                    //}
 
-        // set up a handler for taps on the start/stop scanning button
-        toggleScan = (Button) myView.findViewById(R.id.btnToggleScan);
-        toggleScan.setOnClickListener(new View.OnClickListener() {
+                    selectedBeacon = newSelectedBeacon;
 
-            @Override
-            public void onClick(View view) {
-                toggleScan();
-            }
+                }
+
+            };
+
+            // set up a handler for taps on the start/stop scanning button
+            //toggleScan = (Button) getActivity().findViewById(R.id.btnToggleScan);
+            //toggleScan.setOnClickListener(new View.OnClickListener() {
+
+            //@Override
+            //public void onClick(View view) {
+            //toggleScan();
+            //}
 
         });
 
         // retrieve the BluetoothManager instance and check if Bluetooth is enabled. If not the
         // user will be prompted to enable it and the response will be checked in onActivityResult
-        final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        final BluetoothManager bluetoothManager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
         bleDev = bluetoothManager.getAdapter();
         if (bleDev == null || !bleDev.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
 
+        //GraphView graph = (GraphView) findViewById(R.id.graph);
+
+        // create and add data series to the graph
+        //rawRssi = new LineGraphSeries<>();
+        //basicFilteredRssi = new LineGraphSeries<>();
+        //graph.addSeries(rawRssi);
+        //graph.addSeries(basicFilteredRssi);
+
+        // configure axes
+//        Viewport viewport = graph.getViewport();
+//        viewport.setXAxisBoundsManual(true);
+//        viewport.setMinX(0);
+//        viewport.setMaxX(100); // 10s of data visible at 10Hz update rate
+//        viewport.setYAxisBoundsManual(true);
+//        viewport.setMinY(-100);
+//        viewport.setMaxY(-10);
+
+        // configure the data series
+//        rawRssi.setColor(Color.argb(255, 255, 0, 0));
+//        rawRssi.setThickness(3);
+//        rawRssi.setTitle("Raw");
+//        basicFilteredRssi.setColor(Color.argb(255, 0, 128, 128));
+//        basicFilteredRssi.setThickness(3);
+//        basicFilteredRssi.setTitle("Filtered");
+
+        // add a legend
+//        graph.getLegendRenderer().setVisible(true);
+//        graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+
+        startScan();
         return myView;
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
 
         // begin scheduling graph updates
-        graphHandler.postDelayed(updateUI, GRAPH_UPDATE_TIME_MS);
+        //graphHandler.postDelayed(updateUI, GRAPH_UPDATE_TIME_MS);
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
 
         // stop any in-progress scan and stop updating the graph if activity is paused
         stopScan();
-        graphHandler.removeCallbacks(updateUI);
+        //graphHandler.removeCallbacks(updateUI);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_ENABLE_BT) {
-            if(resultCode != RESULT_OK) {
-                Toast.makeText(this, "Bluetooth not enabled!", Toast.LENGTH_SHORT).show();
+            if(resultCode != getActivity().RESULT_OK) {
+                Toast.makeText(getActivity(), "Bluetooth not enabled!", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Bluetooth enabled successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Bluetooth enabled successfully", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+    //@Override
+    //public boolean onCreateOptionsMenu(Menu menu) {
+    //    getMenuInflater().inflate(R.menu.menu_main, menu);
+    //    return true;
+    //}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        switch(id) {
-            case R.id.action_mode_balanced:
-                scanMode = ScanSettings.SCAN_MODE_BALANCED;
-                break;
-            case R.id.action_mode_lowlat:
-                scanMode = ScanSettings.SCAN_MODE_LOW_LATENCY;
-                break;
-            default:
-                break;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//
+//        switch(id) {
+//            case R.id.action_mode_balanced:
+//                scanMode = ScanSettings.SCAN_MODE_BALANCED;
+//                break;
+//            case R.id.action_mode_lowlat:
+//                scanMode = ScanSettings.SCAN_MODE_LOW_LATENCY;
+//                break;
+//            default:
+//                break;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
     Runnable updateUI = new Runnable() {
         @Override
@@ -179,26 +220,32 @@ public class ListFragment extends Fragment {
                 // if a beacon is currently selected, append the latest data point to the
                 // two data series. (this could be improved as it will miss multiple readings that
                 // may be received in the interval between graph updates)
-                rawRssi.appendData(new DataPoint(lastx, selectedBeacon.getRssi()), true, 100);
-                basicFilteredRssi.appendData(new DataPoint(lastx, selectedBeacon.getFilteredRssi()), true, 100);
-                lastx++;
+                //rawRssi.appendData(new DataPoint(lastx, selectedBeacon.getRssi()), true, 100);
+                //basicFilteredRssi.appendData(new DataPoint(lastx, selectedBeacon.getFilteredRssi()), true, 100);
+                //lastx++;
             }
 
-            graphHandler.postDelayed(updateUI, GRAPH_UPDATE_TIME_MS);
+            //graphHandler.postDelayed(updateUI, GRAPH_UPDATE_TIME_MS);
+
+            makeT();
         }
 
     };
 
+    private void makeT() {
+        Toast.makeText(getActivity(), "Update UI called", Toast.LENGTH_SHORT).show();
+    }
+
     private void stopScan() {
         if(scanner != null && isScanning) {
-            Toast.makeText(this, "Stopping BLE scan...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Stopping BLE scan...", Toast.LENGTH_SHORT).show();
             isScanning = false;
             Log.i(TAG, "Scan stopped");
             scanner.stopScan(bleScanCallback);
         }
 
         selectedBeacon = null;
-        toggleScan.setText("Start scanning");
+        //toggleScan.setText("Start scanning");
         scanAdapter.clear();
     }
 
@@ -214,13 +261,13 @@ public class ListFragment extends Fragment {
             scanner = bleDev.getBluetoothLeScanner();
             if(scanner == null) {
                 // probably tried to start a scan without granting Bluetooth permission
-                Toast.makeText(this, "Failed to start scan (BT permission granted?)", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Failed to start scan (BT permission granted?)", Toast.LENGTH_LONG).show();
                 Log.w(TAG, "Failed to get BLE scanner instance");
                 return;
             }
         }
 
-        Toast.makeText(this, "Starting BLE scan...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Starting BLE scan...", Toast.LENGTH_SHORT).show();
 
         // clear old scan results
         scanAdapter.clear();
@@ -229,7 +276,7 @@ public class ListFragment extends Fragment {
         ScanSettings settings = new ScanSettings.Builder().setScanMode(scanMode).build();
         scanner.startScan(filters, settings, bleScanCallback);
         isScanning = true;
-        toggleScan.setText("Stop scanning");
+        //toggleScan.setText("Stop scanning");
     }
 
     // class implementing BleScanner callbacks
@@ -243,18 +290,24 @@ public class ListFragment extends Fragment {
             final int rssi = result.getRssi();
 
             if(dev != null && isScanning) {
-                runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         // retrieve device info and add to or update existing set of beacon data
                         String name = dev.getName();
                         String address = dev.getAddress();
                         scanAdapter.update(dev, address, name == null ? "Unnamed device" : name, rssi);
+                        TextView field1 = (TextView) myView.findViewById(R.id.textView4);
+                        //field1.setText(dev.getAddress());
+                        if (dev.getAddress().equals("E2:87:2B:54:1F:7B")) {
+                            field1.setText("RANDOM");
+                        }
                     }
 
                 });
             }
         }
+
 
         @Override
         public void onBatchScanResults(List<ScanResult> results) {
@@ -378,33 +431,14 @@ public class ListFragment extends Fragment {
             notifyDataSetChanged();
         }
 
-
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row;
             if(convertView == null) {
-                row = inflater.inflate(R.layout.list_layout, parent, false);
+                row = inflater.inflate(R.layout.layout_scanresults, parent, false);
             } else {
                 row = convertView;
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View row;
-                if(convertView == null) {
-                    row = inflater.inflate(R.layout.list_layout, parent, false);
-                } else {
-                    row = convertView;
-                }
-
-                // manually set the contents of each of the labels
-                //TextView field1 = (TextView) row.findViewById(R.id.rssi_field);
-                BeaconInfo info = data.get(keys.get(position));
-                //field1.setText(info.name + " [" + info.rssi + " dBm]");
-
-                return row;
-
             }
 
             // manually set the contents of each of the labels
@@ -424,7 +458,5 @@ public class ListFragment extends Fragment {
         }
     }
 
-
-}
 
 }
