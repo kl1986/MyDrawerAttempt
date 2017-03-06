@@ -83,17 +83,15 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getFragmentManager();
 
         if (id == R.id.nav_view_list) {
-            fragmentManager.beginTransaction().replace(R.id.content_frame, new BeaconActivity()).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, new AddItemPage()).commit();
         } else if (id == R.id.nav_offers) {
             fragmentManager.beginTransaction().replace(R.id.content_frame, new OffersFragment()).commit();
         } else if (id == R.id.nav_locations) {
-            //fragmentManager.beginTransaction().replace(R.id.content_frame, new LocationsFragment()).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, new BeaconActivity()).commit();
         } else if (id == R.id.nav_recipes) {
         fragmentManager.beginTransaction().replace(R.id.content_frame, new RecipesFragment()).commit();
         } else if (id == R.id.nav_settings) {
         fragmentManager.beginTransaction().replace(R.id.content_frame, new SettingsFragment()).commit();
-        } else if (id == R.id.nav_add_item_page){
-            fragmentManager.beginTransaction().replace(R.id.content_frame, new AddItemPage()).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
