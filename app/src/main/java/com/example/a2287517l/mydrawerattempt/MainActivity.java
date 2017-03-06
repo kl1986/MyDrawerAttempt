@@ -1,10 +1,9 @@
 package com.example.a2287517l.mydrawerattempt;
 
 import android.app.FragmentManager;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,13 +14,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import android.widget.ImageButton;
-
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    int timeout = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,28 +33,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-//        startActivity(new Intent(MainActivity.this, AddItemOnClick.class));
-
-//        addListenerOnButton();
-    }
-
-    private void addListenerOnButton() {
-        final Context context = this;
-
-        ImageButton imgAddButton = (ImageButton) findViewById(R.id.addTaskBtn);
-
-        imgAddButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-
-                Intent intent = new Intent(context, AddItemOnClick.class);
-                startActivity(intent);
-
-            }
-
-        });
     }
 
     @Override
@@ -107,7 +80,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_offers) {
             fragmentManager.beginTransaction().replace(R.id.content_frame, new OffersFragment()).commit();
         } else if (id == R.id.nav_locations) {
-            fragmentManager.beginTransaction().replace(R.id.content_frame, new LocationsFragment()).commit();
+            //fragmentManager.beginTransaction().replace(R.id.content_frame, new LocationsFragment()).commit();
         } else if (id == R.id.nav_recipes) {
         fragmentManager.beginTransaction().replace(R.id.content_frame, new RecipesFragment()).commit();
         } else if (id == R.id.nav_settings) {

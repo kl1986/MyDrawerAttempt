@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -6,10 +7,42 @@
     android:layout_height="match_parent"
     tools:context=".ListFragment">
 
-    <ListView
-        android:id="@+id/listContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+
+
+                
+
+
+
+    <EditText
+        android:id="@+id/itemInput"
+        android:width="300dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="Add"
+        android:id="@+id/addButton"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="38dp"
+        android:layout_below="@+id/itemInput"
+        android:layout_alignLeft="@+id/itemInput"
+        android:layout_alignStart="@+id/itemInput" />
+
+
+    <TextView
+        android:id="@+id/listText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
 
     </ListView>
 
@@ -43,4 +76,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
     
+
+
 </RelativeLayout>

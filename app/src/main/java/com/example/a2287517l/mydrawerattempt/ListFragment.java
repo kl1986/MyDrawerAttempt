@@ -378,6 +378,7 @@ public class ListFragment extends Fragment {
             notifyDataSetChanged();
         }
 
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -386,6 +387,24 @@ public class ListFragment extends Fragment {
                 row = inflater.inflate(R.layout.list_layout, parent, false);
             } else {
                 row = convertView;
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View row;
+                if(convertView == null) {
+                    row = inflater.inflate(R.layout.list_layout, parent, false);
+                } else {
+                    row = convertView;
+                }
+
+                // manually set the contents of each of the labels
+                //TextView field1 = (TextView) row.findViewById(R.id.rssi_field);
+                BeaconInfo info = data.get(keys.get(position));
+                //field1.setText(info.name + " [" + info.rssi + " dBm]");
+
+                return row;
+
             }
 
             // manually set the contents of each of the labels
