@@ -56,6 +56,7 @@ public class ListDBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+
     //Add a new row to the database
     public void addItem(ListItem item){
         ContentValues values = new ContentValues();
