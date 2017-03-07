@@ -40,11 +40,11 @@ public class ListDBHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String query = "CREATE TABLE " + TABLE_LIST + "(" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_ITEM + " TEXT " +
-                COLUMN_CAT + " TEXT " +
-                COLUMN_BOUGHT + " BOOLEAN " +
-                COLUMN_DATE_ADDED + " DATE " +
-                COLUMN_DATE_BOUGHT + " DATE " +
+                COLUMN_ITEM + " TEXT, " +
+                COLUMN_CAT + " TEXT, " +
+                COLUMN_BOUGHT + " BOOLEAN, " +
+                COLUMN_DATE_ADDED + " DATE, " +
+                COLUMN_DATE_BOUGHT + " DATE, " +
                 COLUMN_DATA_REMINDER + " DATE " +
                 ");";
         db.execSQL(query);
@@ -59,7 +59,21 @@ public class ListDBHandler extends SQLiteOpenHelper {
     //Add a new row to the database
     public void addItem(ListItem item){
         ContentValues values = new ContentValues();
-        values.put(COLUMN_ITEM, item.get_item_name());
+        String name = item.get_item_name();
+        values.put(COLUMN_ITEM, name);
+        if (name.equals("Milk") || name.equals("Butter") || name.equals("Cheese") || name.equals("Yoghurt")){
+            values.put(COLUMN_CAT, "Dairy");
+        }
+        else if (name.equals("Banana") || name.equals("Tomato") || name.equals("Avocado")){
+            values.put(COLUMN_CAT, "Fruit and Veg");
+        }
+        else if (name.equals("Chips") || name.equals("Ice") || name.equals("Peas")){
+            values.put(COLUMN_CAT, "Frozen");
+        }
+        else {
+            values.put(COLUMN_CAT, "none");
+        }
+
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_LIST, null, values);
         db.close();
@@ -85,6 +99,8 @@ public class ListDBHandler extends SQLiteOpenHelper {
         while (!c.isAfterLast()) {
             if (c.getString(c.getColumnIndex("_item")) != null) {
                 dbString += c.getString(c.getColumnIndex("_item"));
+                dbString += ":";
+                dbString += c.getString(c.getColumnIndex("_cat"));
                 dbString += "\n";
             }
             c.moveToNext();
