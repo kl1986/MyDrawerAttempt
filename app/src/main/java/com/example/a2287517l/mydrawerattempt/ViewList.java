@@ -121,12 +121,9 @@ public class ViewList extends Fragment {
         }
     }
 
-
-
     Runnable updateUI = new Runnable() {
         @Override
         public void run() {
-
 
         }
 
@@ -200,8 +197,6 @@ public class ViewList extends Fragment {
                         TextView field1 = (TextView) myView.findViewById(R.id.textView4);
                         //field1.setText(dev.getAddress());
                         if (dev.getAddress().equals("E2:87:2B:54:1F:7B")) {
-                            //field1.setText("RANDOM");
-                            //SingleChoiceClass my_dialog = new SingleChoiceClass();
                             ListItem[] subList = new ListItem[10];
                             ListPopUp nearMe = new ListPopUp();
                             int subListCount = 0;
@@ -212,7 +207,6 @@ public class ViewList extends Fragment {
                                 }
                             }
                             nearMe.setList(subList);
-
                             nearMe.show(getFragmentManager(), "nearMe");
                             Toast.makeText(getActivity(), "WOOHOO", Toast.LENGTH_SHORT).show();
                         }
@@ -354,20 +348,6 @@ public class ViewList extends Fragment {
             } else {
                 row = convertView;
             }
-
-            // manually set the contents of each of the labels
-//            TextView field1 = (TextView) row.findViewById(R.id.resultField1);
-//            TextView field2 = (TextView) row.findViewById(R.id.resultField2);
-//            BeaconInfo info = data.get(keys.get(position));
-//            field1.setText(info.name + " [" + info.rssi + " dBm]");
-//            field2.setText(info.address);
-//
-//            // if this happens to be the selected beacon, change the background colour to highlight it
-//            if(selectedBeacon != null && info.equals(selectedBeacon))
-//                row.setBackgroundColor(Color.argb(64, 0, 255, 0));
-//            else
-//                row.setBackgroundColor(Color.argb(255, 255, 255, 255));
-
             return row;
         }
     }
@@ -385,9 +365,7 @@ public class ViewList extends Fragment {
 
     //Print the database
     public void printDatabase() {
-//        String dbString = listDBHandler.databaseToString();
-//        listText.setText(dbString);
-//        itemInput.setText("");
+
         String dbString = "";
         for (int i = 0; i < items.length - 1; i++) {
             if (items[i] == null) {
