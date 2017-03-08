@@ -19,6 +19,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,18 +30,20 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class BeaconActivity extends Fragment {
+public class ViewList extends Fragment {
     View myView;
+
+    EditText itemInput;
+    TextView listText;
+    ListDBHandler listDBHandler;
+    ImageButton mAddButton;
+
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private BluetoothAdapter bleDev = null;
     private BluetoothLeScanner scanner = null;
     private ScanResultArrayAdapter scanAdapter = null;
-    //private Handler graphHandler = null;
-    private Button toggleScan = null;
 
-    // time in milliseconds between graph updates
-    private static final int GRAPH_UPDATE_TIME_MS = 100;
 
     // request ID for enabling Bluetooth
     private static final int REQUEST_ENABLE_BT = 1000;
@@ -47,73 +51,39 @@ public class BeaconActivity extends Fragment {
     private boolean isScanning = false;
     private int scanMode = ScanSettings.SCAN_MODE_BALANCED;
 
-    // data series for graphing RSSI of selected beacon
-    //private LineGraphSeries<DataPoint> rawRssi;
-    //private LineGraphSeries<DataPoint> basicFilteredRssi;
-
-    private int lastx = 0;
 
     // currently selected beacon, if any
     private BeaconInfo selectedBeacon = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        myView = inflater.inflate(R.layout.beacon_page, container, false);
+        myView = inflater.inflate(R.layout.list_layout, container, false);
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.beacon_page);
 
-        // create a handler for executing graph updates
-        // graphHandler = new Handler();
 
-        // create the adapter used to populate the list of beacons and attach it to the widget
+        listDBHandler = new ListDBHandler(getActivity(), null, null, 1);
+        itemInput = (EditText) myView.findViewById(R.id.addToList);
+        listText = (TextView) myView.findViewById(R.id.listText);
+        printDatabase();
+
+        mAddButton = (ImageButton) myView.findViewById(R.id.addListBtn);
+        mAddButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ListItem item = new ListItem(itemInput.getText().toString());
+                listDBHandler.addItem(item);
+                printDatabase();
+            }
+        });
+
+
+
+
         scanAdapter = new ScanResultArrayAdapter(getActivity());
-        //final ListView scanResults = (ListView) myView.findViewById(R.id.listResults);
-        //scanResults.setAdapter(scanAdapter);
 
-        TextView field1 = (TextView) myView.findViewById(R.id.textView4);
-        field1.setText("INITIAL");
-        // set up a click handler which sets/updates the selected beacon
-//        scanResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-//                // retrieve the adapter and get the selected item from it
-//                ScanResultArrayAdapter adapter = (ScanResultArrayAdapter) adapterView.getAdapter();
-//                BeaconInfo newSelectedBeacon = adapter.getItem(position);
-//                Log.i(TAG, "Tapped beacon " + newSelectedBeacon.name);
-//                if(!isScanning)
-//                    return;
-//
-//                // if the selected beacon is being changed
-//                if(selectedBeacon == null || !newSelectedBeacon.equals(selectedBeacon)) {
-//                    // reset both data series (doesn't seem to be a clear() method...)
-//                    //DataPoint[] dp = new DataPoint[1];
-//                    //dp[0] = new DataPoint(lastx, newSelectedBeacon.rssi);
-//                    //rawRssi.resetData(dp);
-//                    //basicFilteredRssi.resetData(dp);
-//
-//                    // ask for a redraw of the list widget so that the selected item highlight
-//                    // is updated to match the new item
-//                    // OUTPUT
-//                    // scanResults.invalidateViews();
-//                    //}
-//
-//                    selectedBeacon = newSelectedBeacon;
-//
-//                }
-//
-//            };
-//
-//            // set up a handler for taps on the start/stop scanning button
-//            //toggleScan = (Button) getActivity().findViewById(R.id.btnToggleScan);
-//            //toggleScan.setOnClickListener(new View.OnClickListener() {
-//
-//            //@Override
-//            //public void onClick(View view) {
-//            //toggleScan();
-//            //}
-//
-//        });
+        //TextView field1 = (TextView) myView.findViewById(R.id.textView4);
+        //field1.setText("INITIAL");
+
 
         // retrieve the BluetoothManager instance and check if Bluetooth is enabled. If not the
         // user will be prompted to enable it and the response will be checked in onActivityResult
@@ -124,34 +94,6 @@ public class BeaconActivity extends Fragment {
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
 
-        //GraphView graph = (GraphView) findViewById(R.id.graph);
-
-        // create and add data series to the graph
-        //rawRssi = new LineGraphSeries<>();
-        //basicFilteredRssi = new LineGraphSeries<>();
-        //graph.addSeries(rawRssi);
-        //graph.addSeries(basicFilteredRssi);
-
-        // configure axes
-//        Viewport viewport = graph.getViewport();
-//        viewport.setXAxisBoundsManual(true);
-//        viewport.setMinX(0);
-//        viewport.setMaxX(100); // 10s of data visible at 10Hz update rate
-//        viewport.setYAxisBoundsManual(true);
-//        viewport.setMinY(-100);
-//        viewport.setMaxY(-10);
-
-        // configure the data series
-//        rawRssi.setColor(Color.argb(255, 255, 0, 0));
-//        rawRssi.setThickness(3);
-//        rawRssi.setTitle("Raw");
-//        basicFilteredRssi.setColor(Color.argb(255, 0, 128, 128));
-//        basicFilteredRssi.setThickness(3);
-//        basicFilteredRssi.setTitle("Filtered");
-
-        // add a legend
-//        graph.getLegendRenderer().setVisible(true);
-//        graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
 
         startScan();
         return myView;
@@ -185,45 +127,15 @@ public class BeaconActivity extends Fragment {
         }
     }
 
-    //@Override
-    //public boolean onCreateOptionsMenu(Menu menu) {
-    //    getMenuInflater().inflate(R.menu.menu_main, menu);
-    //    return true;
-    //}
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//
-//        switch(id) {
-//            case R.id.action_mode_balanced:
-//                scanMode = ScanSettings.SCAN_MODE_BALANCED;
-//                break;
-//            case R.id.action_mode_lowlat:
-//                scanMode = ScanSettings.SCAN_MODE_LOW_LATENCY;
-//                break;
-//            default:
-//                break;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 
     Runnable updateUI = new Runnable() {
         @Override
         public void run() {
             if(selectedBeacon != null) {
-                // if a beacon is currently selected, append the latest data point to the
-                // two data series. (this could be improved as it will miss multiple readings that
-                // may be received in the interval between graph updates)
-                //rawRssi.appendData(new DataPoint(lastx, selectedBeacon.getRssi()), true, 100);
-                //basicFilteredRssi.appendData(new DataPoint(lastx, selectedBeacon.getFilteredRssi()), true, 100);
-                //lastx++;
+
             }
 
-            //graphHandler.postDelayed(updateUI, GRAPH_UPDATE_TIME_MS);
-
-            makeT();
         }
 
     };
@@ -296,7 +208,7 @@ public class BeaconActivity extends Fragment {
                         TextView field1 = (TextView) myView.findViewById(R.id.textView4);
                         //field1.setText(dev.getAddress());
                         if (dev.getAddress().equals("E2:87:2B:54:1F:7B")) {
-                            field1.setText("RANDOM");
+                            //field1.setText("RANDOM");
                             //SingleChoiceClass my_dialog = new SingleChoiceClass();
 
                             ListPopUp nearMe = new ListPopUp();
@@ -457,6 +369,24 @@ public class BeaconActivity extends Fragment {
 
             return row;
         }
+    }
+
+
+
+
+
+    //Add a product to the database
+    public void addButtonClicked(View view) {
+        ListItem item = new ListItem(itemInput.getText().toString());
+        listDBHandler.addItem(item);
+        printDatabase();
+    }
+
+    //Print the database
+    public void printDatabase() {
+        String dbString = listDBHandler.databaseToString();
+        listText.setText(dbString);
+        itemInput.setText("");
     }
 
 

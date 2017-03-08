@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getFragmentManager();
 
         if (id == R.id.nav_view_list) {
-            fragmentManager.beginTransaction().replace(R.id.content_frame, new AddItemPage()).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, new ViewList()).commit();
         } else if (id == R.id.nav_offers) {
             fragmentManager.beginTransaction().replace(R.id.content_frame, new OffersFragment()).commit();
         } else if (id == R.id.nav_locations) {
