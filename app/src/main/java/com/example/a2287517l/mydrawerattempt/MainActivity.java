@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity
 
         if (savedInstanceState == null) {
             // Display AddItemPage on app startup
-            getFragmentManager().beginTransaction().replace(R.id.content_frame, new AddItemPage()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_frame, new ViewList()).commit();
         }
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

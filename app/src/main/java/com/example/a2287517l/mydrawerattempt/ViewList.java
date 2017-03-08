@@ -37,23 +37,19 @@ public class ViewList extends Fragment {
     TextView listText;
     ListDBHandler listDBHandler;
     ImageButton mAddButton;
+    ListItem[] items = new ListItem[10];
 
     private static final String TAG = MainActivity.class.getSimpleName();
-
     private BluetoothAdapter bleDev = null;
     private BluetoothLeScanner scanner = null;
     private ScanResultArrayAdapter scanAdapter = null;
-
-
-    // request ID for enabling Bluetooth
     private static final int REQUEST_ENABLE_BT = 1000;
-
     private boolean isScanning = false;
     private int scanMode = ScanSettings.SCAN_MODE_BALANCED;
+    //private BeaconInfo selectedBeacon = null;
 
 
-    // currently selected beacon, if any
-    private BeaconInfo selectedBeacon = null;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,7 +57,7 @@ public class ViewList extends Fragment {
         super.onCreate(savedInstanceState);
 
 
-        listDBHandler = new ListDBHandler(getActivity(), null, null, 1);
+        listDBHandler = new ListDBHandler(getActivity(), null, null, 1, items);
         itemInput = (EditText) myView.findViewById(R.id.addToList);
         listText = (TextView) myView.findViewById(R.id.listText);
         printDatabase();
@@ -81,8 +77,6 @@ public class ViewList extends Fragment {
 
         scanAdapter = new ScanResultArrayAdapter(getActivity());
 
-        //TextView field1 = (TextView) myView.findViewById(R.id.textView4);
-        //field1.setText("INITIAL");
 
 
         // retrieve the BluetoothManager instance and check if Bluetooth is enabled. If not the
@@ -132,9 +126,7 @@ public class ViewList extends Fragment {
     Runnable updateUI = new Runnable() {
         @Override
         public void run() {
-            if(selectedBeacon != null) {
 
-            }
 
         }
 
@@ -152,7 +144,7 @@ public class ViewList extends Fragment {
             scanner.stopScan(bleScanCallback);
         }
 
-        selectedBeacon = null;
+        //selectedBeacon = null;
         //toggleScan.setText("Start scanning");
         scanAdapter.clear();
     }
@@ -210,8 +202,17 @@ public class ViewList extends Fragment {
                         if (dev.getAddress().equals("E2:87:2B:54:1F:7B")) {
                             //field1.setText("RANDOM");
                             //SingleChoiceClass my_dialog = new SingleChoiceClass();
-
+                            ListItem[] subList = new ListItem[10];
                             ListPopUp nearMe = new ListPopUp();
+                            int subListCount = 0;
+                            for (int i = 0; i < items.length -1; i++){
+                                if (items[i].get_cat().equals("Dairy")) {
+                                    subList[subListCount] = items[i];
+                                    subListCount++;
+                                }
+                            }
+                            nearMe.setList(subList);
+
                             nearMe.show(getFragmentManager(), "nearMe");
                             Toast.makeText(getActivity(), "WOOHOO", Toast.LENGTH_SHORT).show();
                         }
@@ -355,17 +356,17 @@ public class ViewList extends Fragment {
             }
 
             // manually set the contents of each of the labels
-            TextView field1 = (TextView) row.findViewById(R.id.resultField1);
-            TextView field2 = (TextView) row.findViewById(R.id.resultField2);
-            BeaconInfo info = data.get(keys.get(position));
-            field1.setText(info.name + " [" + info.rssi + " dBm]");
-            field2.setText(info.address);
-
-            // if this happens to be the selected beacon, change the background colour to highlight it
-            if(selectedBeacon != null && info.equals(selectedBeacon))
-                row.setBackgroundColor(Color.argb(64, 0, 255, 0));
-            else
-                row.setBackgroundColor(Color.argb(255, 255, 255, 255));
+//            TextView field1 = (TextView) row.findViewById(R.id.resultField1);
+//            TextView field2 = (TextView) row.findViewById(R.id.resultField2);
+//            BeaconInfo info = data.get(keys.get(position));
+//            field1.setText(info.name + " [" + info.rssi + " dBm]");
+//            field2.setText(info.address);
+//
+//            // if this happens to be the selected beacon, change the background colour to highlight it
+//            if(selectedBeacon != null && info.equals(selectedBeacon))
+//                row.setBackgroundColor(Color.argb(64, 0, 255, 0));
+//            else
+//                row.setBackgroundColor(Color.argb(255, 255, 255, 255));
 
             return row;
         }
@@ -384,7 +385,17 @@ public class ViewList extends Fragment {
 
     //Print the database
     public void printDatabase() {
-        String dbString = listDBHandler.databaseToString();
+//        String dbString = listDBHandler.databaseToString();
+//        listText.setText(dbString);
+//        itemInput.setText("");
+        String dbString = "";
+        for (int i = 0; i < items.length - 1; i++) {
+            if (items[i] == null) {
+                break;
+            }
+            //Toast.makeText(getActivity(), i, Toast.LENGTH_SHORT).show();
+            dbString += items[i].get_item_name() + ", ";
+        }
         listText.setText(dbString);
         itemInput.setText("");
     }

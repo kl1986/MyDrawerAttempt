@@ -47,12 +47,13 @@ public class AddItemPage extends Fragment {
     TextView listText;
     ListDBHandler listDBHandler;
     ImageButton mAddButton;
+    ListItem[] items = new ListItem[100];
 
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.list_layout, container, false);
-        listDBHandler = new ListDBHandler(getActivity(), null, null, 1);
+        listDBHandler = new ListDBHandler(getActivity(), null, null, 1, items);
         itemInput = (EditText) myView.findViewById(R.id.addToList);
         listText = (TextView) myView.findViewById(R.id.listText);
         printDatabase();

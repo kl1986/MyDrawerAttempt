@@ -19,6 +19,7 @@ public class ListDBHandler extends SQLiteOpenHelper {
     private String _list_name, _cat;
     private boolean _bought;
     private Date _date_added, _date_bought, _date_deleted, _date_reminder;
+    ListItem[] items;
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "listDB.db";
@@ -32,8 +33,10 @@ public class ListDBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_DATA_REMINDER = "_date_reminder";
 
     //We need to pass database information along to superclass
-    public ListDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public ListDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, ListItem[] i) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
+        items = i;
+        databaseToString();
     }
 
     @Override
@@ -96,6 +99,7 @@ public class ListDBHandler extends SQLiteOpenHelper {
         //Move to the first row in your results
         c.moveToFirst();
 
+        int count = 0;
         //Position after the last row means the end of the results
         while (!c.isAfterLast()) {
             if (c.getString(c.getColumnIndex("_item")) != null) {
@@ -103,6 +107,11 @@ public class ListDBHandler extends SQLiteOpenHelper {
                 dbString += ":";
                 dbString += c.getString(c.getColumnIndex("_cat"));
                 dbString += "\n";
+                items[count] = new ListItem(c.getString(c.getColumnIndex("_item")));
+                items[count].set_id(Integer.parseInt(c.getString(c.getColumnIndex("_id"))));
+                items[count].set_cat(c.getString(c.getColumnIndex("_cat")));
+                items[count].set_bought(Boolean.parseBoolean(c.getString(c.getColumnIndex("_bought"))));
+                count++;
             }
             c.moveToNext();
         }

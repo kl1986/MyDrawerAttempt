@@ -17,6 +17,7 @@ import java.util.ArrayList;
 public class ListPopUp extends DialogFragment {
 
     public ListItem[] itemList;
+    String[] listItemNames = new String[10];
 
     ArrayList<String> list = new ArrayList<String>();
     @Override
@@ -24,7 +25,7 @@ public class ListPopUp extends DialogFragment {
     public Dialog onCreateDialog (Bundle savedInstanceState) {
         final String[] items = getResources().getStringArray(R.array.near_list);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Near You").setMultiChoiceItems(R.array.near_list, null, new DialogInterface.OnMultiChoiceClickListener() {
+        builder.setTitle("Near You").setMultiChoiceItems(listItemNames, null, new DialogInterface.OnMultiChoiceClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
@@ -52,11 +53,15 @@ public class ListPopUp extends DialogFragment {
     }
 
     public void setList(ListItem[] i) {
-        itemList= i;
+        for (int x = 0; x < i.length -1; x++){
+            if (i[x] == null) {
+                break;
+            }
+            listItemNames[x] = i[x].get_item_name();
+        }
     }
 
     public ListPopUp() {
         super();
-
     }
 }
