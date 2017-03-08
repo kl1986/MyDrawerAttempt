@@ -89,6 +89,29 @@ public class ListDBHandler extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + TABLE_LIST + " WHERE " + COLUMN_ITEM + "=\"" + itemName + "\";");
     }
 
+    public boolean checkItemExists(String target_name) {
+        boolean found = false;
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_LIST + " WHERE 1";
+
+        //Cursor points to a location in your results
+        Cursor c = db.rawQuery(query, null);
+        //Move to the first row in your results
+        c.moveToFirst();
+
+        int count = 0;
+        //Position after the last row means the end of the results
+        while (!c.isAfterLast()) {
+            if (c.getString(c.getColumnIndex("_item")) != null) {
+                if (c.getString(c.getColumnIndex("_item")).equals(target_name));
+                found = true;
+            }
+            c.moveToNext();
+        }
+        db.close();
+        return found;
+    }
+
     public String databaseToString(){
         String dbString = "";
         SQLiteDatabase db = getWritableDatabase();

@@ -10,18 +10,14 @@ import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.Fragment;
@@ -38,6 +34,7 @@ public class ViewList extends Fragment {
     ListDBHandler listDBHandler;
     ImageButton mAddButton;
     ListItem[] items = new ListItem[10];
+    Boolean found = true;
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private BluetoothAdapter bleDev = null;
@@ -49,13 +46,10 @@ public class ViewList extends Fragment {
     //private BeaconInfo selectedBeacon = null;
 
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.list_layout, container, false);
         super.onCreate(savedInstanceState);
-
 
         listDBHandler = new ListDBHandler(getActivity(), null, null, 1, items);
         itemInput = (EditText) myView.findViewById(R.id.addToList);
@@ -66,18 +60,13 @@ public class ViewList extends Fragment {
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ListItem item = new ListItem(itemInput.getText().toString());
-                listDBHandler.addItem(item);
-                printDatabase();
+            ListItem item = new ListItem(itemInput.getText().toString());
+            listDBHandler.addItem(item);
+            printDatabase();
             }
         });
 
-
-
-
         scanAdapter = new ScanResultArrayAdapter(getActivity());
-
-
 
         // retrieve the BluetoothManager instance and check if Bluetooth is enabled. If not the
         // user will be prompted to enable it and the response will be checked in onActivityResult
@@ -87,7 +76,6 @@ public class ViewList extends Fragment {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
-
 
         startScan();
         return myView;
@@ -194,9 +182,7 @@ public class ViewList extends Fragment {
                         String name = dev.getName();
                         String address = dev.getAddress();
                         scanAdapter.update(dev, address, name == null ? "Unnamed device" : name, rssi);
-                        TextView field1 = (TextView) myView.findViewById(R.id.textView4);
-                        //field1.setText(dev.getAddress());
-                        if (dev.getAddress().equals("E2:87:2B:54:1F:7B")) {
+                        if (dev.getAddress().equals("E2:87:2B:54:1F:7B") && !found) {
                             ListItem[] subList = new ListItem[10];
                             ListPopUp nearMe = new ListPopUp();
                             int subListCount = 0;
@@ -208,7 +194,8 @@ public class ViewList extends Fragment {
                             }
                             nearMe.setList(subList);
                             nearMe.show(getFragmentManager(), "nearMe");
-                            Toast.makeText(getActivity(), "WOOHOO", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getActivity(), "WOOHOO", Toast.LENGTH_SHORT).show();
+                            found = true;
                         }
                     }
 

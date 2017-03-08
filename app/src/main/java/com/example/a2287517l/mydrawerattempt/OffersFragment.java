@@ -23,8 +23,16 @@ public class OffersFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.offers_layout, container, false);
 
-        TextView offerSlot = (TextView) myView.findViewById(R.id.textView4);
+        TextView offer1 = (TextView) myView.findViewById(R.id.Offer1);
+        TextView offer2 = (TextView) myView.findViewById(R.id.Offer2);
         listDBHandler = new ListDBHandler(getActivity(), null, null, 1, items);
+
+        if (listDBHandler.checkItemExists("Steak")) {
+            offer1.setText("OFFER ON STEAK AT TESCO - 30% OFF!");
+        };
+        if (listDBHandler.checkItemExists("Chips")) {
+            offer2.setText("OFFER ON CHIPS AT SAINSBURY'S - BUY 1 GET 1 FREE!");
+        };
 
         return myView;
     }
