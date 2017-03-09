@@ -76,7 +76,6 @@ public class ViewList extends Fragment {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
-
         startScan();
         return myView;
     }
@@ -114,7 +113,6 @@ public class ViewList extends Fragment {
         public void run() {
 
         }
-
     };
 
     private void makeT() {
@@ -167,12 +165,16 @@ public class ViewList extends Fragment {
     // class implementing BleScanner callbacks
     private ScanCallback bleScanCallback = new ScanCallback() {
 
+        ArrayList<String> bought_list;
+
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
 
             final BluetoothDevice dev = result.getDevice();
             final int rssi = result.getRssi();
+
+
 
             if(dev != null && isScanning) {
                 getActivity().runOnUiThread(new Runnable() {
@@ -182,9 +184,12 @@ public class ViewList extends Fragment {
                         String name = dev.getName();
                         String address = dev.getAddress();
                         scanAdapter.update(dev, address, name == null ? "Unnamed device" : name, rssi);
+
+                        // once its found the right beacon
                         if (dev.getAddress().equals("E2:87:2B:54:1F:7B") && !found) {
+
+                            // create a sublist of items on shopping list belonging to the category
                             ListItem[] subList = new ListItem[10];
-                            ListPopUp nearMe = new ListPopUp();
                             int subListCount = 0;
                             for (int i = 0; i < items.length -1; i++){
                                 if (items[i].get_cat().equals("Dairy")) {
@@ -192,8 +197,21 @@ public class ViewList extends Fragment {
                                     subListCount++;
                                 }
                             }
+
+                            // create the pop up
+                            ListPopUp nearMe = new ListPopUp();
                             nearMe.setList(subList);
                             nearMe.show(getFragmentManager(), "nearMe");
+
+                            // get the items that the user selected and set them to bought in the list
+                            bought_list = nearMe.getList();
+                            for (String bought_item : bought_list) {
+                                for (int i = 0; i < items.length -1; i++){
+                                    if (items[i].get_item_name().equals(bought_item)) {
+                                        items[i].set_bought(true);
+                                    }
+                                }
+                            }
                             //Toast.makeText(getActivity(), "WOOHOO", Toast.LENGTH_SHORT).show();
                             found = true;
                         }
@@ -340,9 +358,6 @@ public class ViewList extends Fragment {
     }
 
 
-
-
-
     //Add a product to the database
     public void addButtonClicked(View view) {
         ListItem item = new ListItem(itemInput.getText().toString());
@@ -359,7 +374,9 @@ public class ViewList extends Fragment {
                 break;
             }
             //Toast.makeText(getActivity(), i, Toast.LENGTH_SHORT).show();
-            dbString += items[i].get_item_name() + ", ";
+            if (!items[i].is_bought()) {
+                dbString += items[i].get_item_name() + "\n";
+            }
         }
         listText.setText(dbString);
         itemInput.setText("");

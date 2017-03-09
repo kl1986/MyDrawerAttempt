@@ -61,6 +61,10 @@ public class ListPopUp extends DialogFragment {
         }
     }
 
+    public ArrayList<String> getList() {
+        return list;
+    }
+
     public ListPopUp() {
         super();
     }
