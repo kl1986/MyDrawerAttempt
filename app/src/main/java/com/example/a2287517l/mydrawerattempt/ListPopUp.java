@@ -17,23 +17,25 @@ import java.util.ArrayList;
 public class ListPopUp extends DialogFragment {
 
     public ListItem[] itemList;
-    String[] listItemNames = new String[10];
+    String[] listItemNames; // = new String[10];
+    ListItem[] items = new ListItem[10];
+    ListDBHandler listDBHandler;
 
     ArrayList<String> list = new ArrayList<String>();
     @Override
     @NonNull
     public Dialog onCreateDialog (Bundle savedInstanceState) {
-        final String[] items = getResources().getStringArray(R.array.near_list);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        listDBHandler = new ListDBHandler(getActivity(), null, null, 1, items);
         builder.setTitle("Near You").setMultiChoiceItems(listItemNames, null, new DialogInterface.OnMultiChoiceClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                 if (isChecked) {
-                    list.add(items[which]);
+                    list.add(listItemNames[which]);
                 }
-                else if (list.contains(items[which])){
-                    list.remove(items[which]);
+                else if (list.contains(listItemNames[which])){
+                    list.remove(listItemNames[which]);
                 }
             }
 
@@ -42,9 +44,19 @@ public class ListPopUp extends DialogFragment {
             public void onClick(DialogInterface dialog, int which) {
                 String selections = "";
                 for (String ms: list) {
+
+                    for (int i = 0; i< items.length; i++ ) {
+                        if (items[i] != null) {
+                            //Toast.makeText(getActivity(), "data" + items[i].get_item_name(), Toast.LENGTH_SHORT).show();
+                            if (items[i].get_item_name().equals(ms)) {
+                                //Toast.makeText(getActivity(), "I get here", Toast.LENGTH_SHORT).show();
+                                listDBHandler.deleteProduct(items[i].get_item_name());
+                            }
+                        }
+                    }
                     selections = selections + ", " + ms;
                 }
-                Toast.makeText(getActivity(), "near list:" + selections, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Deleted from List:" + selections, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -52,12 +64,25 @@ public class ListPopUp extends DialogFragment {
         return builder.create();
     }
 
-    public void setList(ListItem[] i) {
-        for (int x = 0; x < i.length -1; x++){
-            if (i[x] == null) {
-                break;
+    public void setList(ListItem[] t) {
+        items = t;
+        int count = 0;
+        for (int i = 0; i < items.length; i++) {
+            if (items[i] != null) {
+                count++;
             }
-            listItemNames[x] = i[x].get_item_name();
+        }
+
+        listItemNames = new String[count];
+
+        for (int i =0; i < listItemNames.length; i++){
+            listItemNames[i] = "";
+        }
+
+        for (int i = 0; i < items.length; i++) {
+            if (items[i] != null) {
+                listItemNames[i] = items[i].get_item_name();
+            }
         }
     }
 

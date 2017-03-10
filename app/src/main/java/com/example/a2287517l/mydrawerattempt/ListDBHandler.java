@@ -81,12 +81,16 @@ public class ListDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_LIST, null, values);
         db.close();
+        databaseToString();
+
+
     }
 
     //Delete a product from the database
     public void deleteProduct(String itemName){
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_LIST + " WHERE " + COLUMN_ITEM + "=\"" + itemName + "\";");
+        databaseToString();
     }
 
     public boolean checkItemExists(String target_name) {
@@ -121,6 +125,10 @@ public class ListDBHandler extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(query, null);
         //Move to the first row in your results
         c.moveToFirst();
+
+        for (int i = 0; i< items.length; i++) {
+            items[i] = null;
+        }
 
         int count = 0;
         //Position after the last row means the end of the results

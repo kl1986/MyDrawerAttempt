@@ -36,7 +36,7 @@ public class ListItem {
         return _item_name;
     }
 
-    public void set_list_name(String _item_name) {
+    public void set_item_name(String _item_name) {
         this._item_name = _item_name;
     }
 

@@ -12,15 +12,6 @@
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/nav_offers" />
         <item
-            android:id="@+id/nav_locations"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/nav_locations" />
-        <item
-            android:id="@+id/nav_recipes"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/nav_recipes" />
-
-        <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/nav_settings" />

@@ -34,7 +34,7 @@ public class ViewList extends Fragment {
     ListDBHandler listDBHandler;
     ImageButton mAddButton;
     ListItem[] items = new ListItem[10];
-    Boolean found = true;
+    Boolean found = false;
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private BluetoothAdapter bleDev = null;
@@ -62,7 +62,8 @@ public class ViewList extends Fragment {
             public void onClick(View v) {
             ListItem item = new ListItem(itemInput.getText().toString());
             listDBHandler.addItem(item);
-            printDatabase();
+
+                printDatabase();
             }
         });
 
@@ -184,40 +185,30 @@ public class ViewList extends Fragment {
                         String name = dev.getName();
                         String address = dev.getAddress();
                         scanAdapter.update(dev, address, name == null ? "Unnamed device" : name, rssi);
-
-                        // once its found the right beacon
-                        if (dev.getAddress().equals("E2:87:2B:54:1F:7B") && !found) {
-
-                            // create a sublist of items on shopping list belonging to the category
-                            ListItem[] subList = new ListItem[10];
-                            int subListCount = 0;
-                            for (int i = 0; i < items.length -1; i++){
-                                if (items[i].get_cat().equals("Dairy")) {
-                                    subList[subListCount] = items[i];
-                                    subListCount++;
-                                }
-                            }
-
-                            // create the pop up
-                            ListPopUp nearMe = new ListPopUp();
-                            nearMe.setList(subList);
-                            nearMe.show(getFragmentManager(), "nearMe");
-
-                            // get the items that the user selected and set them to bought in the list
-                            bought_list = nearMe.getList();
-                            for (String bought_item : bought_list) {
-                                for (int i = 0; i < items.length -1; i++){
-                                    if (items[i].get_item_name().equals(bought_item)) {
-                                        items[i].set_bought(true);
+                        boolean hasDairy = false;
+                        int subListCount = 0;
+                        ListItem[] subList = new ListItem[10];
+                        if (!found) {
+                            for (int i = 0; i < items.length; i++) {
+                                if (items[i] != null) {
+                                    if (items[i].get_cat().equals("Dairy")) {
+                                        subList[subListCount] = items[i];
+                                        subListCount++;
+                                        // create the pop up
+                                    ListPopUp nearMe = new ListPopUp();
+                                    nearMe.setList(subList);
+                                    nearMe.show(getFragmentManager(), "nearMe");
                                     }
+
                                 }
+                                found = true;
+                                printDatabase();
                             }
-                            //Toast.makeText(getActivity(), "WOOHOO", Toast.LENGTH_SHORT).show();
-                            found = true;
                         }
                     }
 
                 });
+//                printDatabase();
             }
         }
 
@@ -367,13 +358,11 @@ public class ViewList extends Fragment {
 
     //Print the database
     public void printDatabase() {
-
         String dbString = "";
         for (int i = 0; i < items.length - 1; i++) {
             if (items[i] == null) {
                 break;
             }
-            //Toast.makeText(getActivity(), i, Toast.LENGTH_SHORT).show();
             if (!items[i].is_bought()) {
                 dbString += items[i].get_item_name() + "\n";
             }
